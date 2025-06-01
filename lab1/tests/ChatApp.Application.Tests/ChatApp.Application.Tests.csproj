@@ -20,4 +20,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ChatApp.Application\ChatApp.Application.csproj" />
+  </ItemGroup>
+
 </Project>
