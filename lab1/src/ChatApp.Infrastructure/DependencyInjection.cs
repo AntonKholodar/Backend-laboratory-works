@@ -1,5 +1,7 @@
 using ChatApp.Application.Common.Interfaces;
+using ChatApp.Domain.Repositories;
 using ChatApp.Infrastructure.Data;
+using ChatApp.Infrastructure.Repositories;
 using ChatApp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,10 @@ public static class DependencyInjection
         // Register the DbContext as IApplicationDbContext
         services.AddScoped<IApplicationDbContext>(provider => 
             provider.GetRequiredService<ChatAppDbContext>());
+
+        // Register repositories
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
 
         // Register services
         services.AddScoped<IPasswordHasher, PasswordHasherService>();

@@ -1,12 +1,12 @@
 using ChatApp.Application.Common.Interfaces;
-using ChatApp.Application.Common.Models;
+using ChatApp.Domain.Entities;
 using ChatApp.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatApp.Application.Users.Queries.LoginUser;
+namespace ChatApp.Application.Features.Users.Queries.LoginUser;
 
-public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, UserDto?>
+public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, User>
 {
     private readonly IApplicationDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
@@ -17,7 +17,7 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, UserDto?>
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<UserDto?> Handle(LoginUserQuery request, CancellationToken cancellationToken)
+    public async Task<User> Handle(LoginUserQuery request, CancellationToken cancellationToken)
     {
         // Create Email value object for validation
         var email = new Email(request.Email);
@@ -28,31 +28,19 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, UserDto?>
 
         if (user == null)
         {
-            return null; // User not found
+            throw new UnauthorizedAccessException("Invalid email or password.");
         }
 
         // Verify password
         if (!_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
         {
-            return null; // Invalid password
+            throw new UnauthorizedAccessException("Invalid email or password.");
         }
 
         // Update online status
         user.SetOnlineStatus(true);
         await _context.SaveChangesAsync(cancellationToken);
 
-        // Return user DTO
-        return new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Email = user.Email.Value,
-            Gender = user.Gender,
-            DateOfBirth = user.DateOfBirth,
-            IsOnline = user.IsOnline,
-            LastSeenAt = user.LastSeenAt,
-            CreatedAt = user.CreatedAt,
-            Age = user.GetAge()
-        };
+        return user;
     }
 } 

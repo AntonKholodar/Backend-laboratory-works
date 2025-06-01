@@ -1,6 +1,7 @@
+using ChatApp.Domain.ValueObjects;
 using FluentValidation;
 
-namespace ChatApp.Application.Users.Commands.RegisterUser;
+namespace ChatApp.Application.Features.Users.Commands.RegisterUser;
 
 public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {
@@ -8,25 +9,41 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required")
-            .MinimumLength(2).WithMessage("Name must be at least 2 characters")
-            .MaximumLength(100).WithMessage("Name cannot exceed 100 characters");
+            .Length(2, 100).WithMessage("Name must be between 2 and 100 characters");
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("Invalid email format");
+            .Must(BeValidEmail).WithMessage("Email format is invalid");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")
-            .MinimumLength(6).WithMessage("Password must be at least 6 characters")
-            .MaximumLength(100).WithMessage("Password cannot exceed 100 characters");
+            .MinimumLength(6).WithMessage("Password must be at least 6 characters");
 
         RuleFor(x => x.Gender)
-            .IsInEnum().WithMessage("Invalid gender value");
+            .IsInEnum().WithMessage("Valid gender is required");
 
         RuleFor(x => x.DateOfBirth)
             .NotEmpty().WithMessage("Date of birth is required")
-            .LessThan(DateTime.Today).WithMessage("Date of birth cannot be in the future")
-            .GreaterThan(DateTime.Today.AddYears(-120)).WithMessage("Date of birth cannot be more than 120 years ago")
-            .LessThanOrEqualTo(DateTime.Today.AddYears(-13)).WithMessage("User must be at least 13 years old");
+            .Must(BeValidAge).WithMessage("Age must be between 13 and 120 years");
+    }
+
+    private bool BeValidEmail(string email)
+    {
+        try
+        {
+            new Email(email); // This will throw if invalid
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private bool BeValidAge(DateTime dateOfBirth)
+    {
+        var age = DateTime.Today.Year - dateOfBirth.Year;
+        if (dateOfBirth.Date > DateTime.Today.AddYears(-age)) age--;
+        return age >= 13 && age <= 120;
     }
 } 

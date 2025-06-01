@@ -1,4 +1,4 @@
-using ChatApp.Application.Users.Commands.RegisterUser;
+using ChatApp.Application.Features.Users.Commands.RegisterUser;
 using ChatApp.Domain.ValueObjects;
 using Xunit;
 
@@ -11,7 +11,14 @@ public class RegisterUserCommandValidatorTests
     [Fact]
     public void Validate_EmptyName_ShouldHaveValidationError()
     {
-        var command = new RegisterUserCommand("", "test@example.com", "password123", Gender.Male, DateTime.Today.AddYears(-25));
+        var command = new RegisterUserCommand 
+        { 
+            Name = "", 
+            Email = "test@example.com", 
+            Password = "password123", 
+            Gender = Gender.Male, 
+            DateOfBirth = DateTime.Today.AddYears(-25) 
+        };
         var result = _validator.Validate(command);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(command.Name));
@@ -20,7 +27,14 @@ public class RegisterUserCommandValidatorTests
     [Fact]
     public void Validate_ShortName_ShouldHaveValidationError()
     {
-        var command = new RegisterUserCommand("A", "test@example.com", "password123", Gender.Male, DateTime.Today.AddYears(-25));
+        var command = new RegisterUserCommand 
+        { 
+            Name = "A", 
+            Email = "test@example.com", 
+            Password = "password123", 
+            Gender = Gender.Male, 
+            DateOfBirth = DateTime.Today.AddYears(-25) 
+        };
         var result = _validator.Validate(command);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(command.Name));
@@ -29,7 +43,14 @@ public class RegisterUserCommandValidatorTests
     [Fact]
     public void Validate_InvalidEmail_ShouldHaveValidationError()
     {
-        var command = new RegisterUserCommand("John Doe", "invalid-email", "password123", Gender.Male, DateTime.Today.AddYears(-25));
+        var command = new RegisterUserCommand 
+        { 
+            Name = "John Doe", 
+            Email = "invalid-email", 
+            Password = "password123", 
+            Gender = Gender.Male, 
+            DateOfBirth = DateTime.Today.AddYears(-25) 
+        };
         var result = _validator.Validate(command);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(command.Email));
@@ -38,7 +59,14 @@ public class RegisterUserCommandValidatorTests
     [Fact]
     public void Validate_ShortPassword_ShouldHaveValidationError()
     {
-        var command = new RegisterUserCommand("John Doe", "test@example.com", "12345", Gender.Male, DateTime.Today.AddYears(-25));
+        var command = new RegisterUserCommand 
+        { 
+            Name = "John Doe", 
+            Email = "test@example.com", 
+            Password = "12345", 
+            Gender = Gender.Male, 
+            DateOfBirth = DateTime.Today.AddYears(-25) 
+        };
         var result = _validator.Validate(command);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(command.Password));
@@ -47,7 +75,14 @@ public class RegisterUserCommandValidatorTests
     [Fact]
     public void Validate_UserTooYoung_ShouldHaveValidationError()
     {
-        var command = new RegisterUserCommand("John Doe", "test@example.com", "password123", Gender.Male, DateTime.Today.AddYears(-12));
+        var command = new RegisterUserCommand 
+        { 
+            Name = "John Doe", 
+            Email = "test@example.com", 
+            Password = "password123", 
+            Gender = Gender.Male, 
+            DateOfBirth = DateTime.Today.AddYears(-12) 
+        };
         var result = _validator.Validate(command);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(command.DateOfBirth));
@@ -56,7 +91,14 @@ public class RegisterUserCommandValidatorTests
     [Fact]
     public void Validate_FutureDateOfBirth_ShouldHaveValidationError()
     {
-        var command = new RegisterUserCommand("John Doe", "test@example.com", "password123", Gender.Male, DateTime.Today.AddDays(1));
+        var command = new RegisterUserCommand 
+        { 
+            Name = "John Doe", 
+            Email = "test@example.com", 
+            Password = "password123", 
+            Gender = Gender.Male, 
+            DateOfBirth = DateTime.Today.AddDays(1) 
+        };
         var result = _validator.Validate(command);
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(command.DateOfBirth));
@@ -65,7 +107,14 @@ public class RegisterUserCommandValidatorTests
     [Fact]
     public void Validate_ValidCommand_ShouldNotHaveValidationErrors()
     {
-        var command = new RegisterUserCommand("John Doe", "test@example.com", "password123", Gender.Male, DateTime.Today.AddYears(-25));
+        var command = new RegisterUserCommand 
+        { 
+            Name = "John Doe", 
+            Email = "test@example.com", 
+            Password = "password123", 
+            Gender = Gender.Male, 
+            DateOfBirth = DateTime.Today.AddYears(-25) 
+        };
         var result = _validator.Validate(command);
         Assert.True(result.IsValid);
         Assert.Empty(result.Errors);

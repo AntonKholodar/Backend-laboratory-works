@@ -1,11 +1,11 @@
+using ChatApp.Application.Common.DTOs;
 using ChatApp.Application.Common.Interfaces;
-using ChatApp.Application.Common.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatApp.Application.Messages.Queries.GetRecentMessages;
+namespace ChatApp.Application.Features.Messages.Queries.GetRecentMessages;
 
-public class GetRecentMessagesQueryHandler : IRequestHandler<GetRecentMessagesQuery, IEnumerable<MessageDto>>
+public class GetRecentMessagesQueryHandler : IRequestHandler<GetRecentMessagesQuery, List<MessageDto>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -14,12 +14,12 @@ public class GetRecentMessagesQueryHandler : IRequestHandler<GetRecentMessagesQu
         _context = context;
     }
 
-    public async Task<IEnumerable<MessageDto>> Handle(GetRecentMessagesQuery request, CancellationToken cancellationToken)
+    public async Task<List<MessageDto>> Handle(GetRecentMessagesQuery request, CancellationToken cancellationToken)
     {
         var messages = await _context.Messages
             .Include(m => m.Sender)
             .OrderByDescending(m => m.CreatedAt)
-            .Take(request.Count)
+            .Take(request.Limit)
             .Select(m => new MessageDto
             {
                 Id = m.Id,
@@ -32,7 +32,6 @@ public class GetRecentMessagesQueryHandler : IRequestHandler<GetRecentMessagesQu
             })
             .ToListAsync(cancellationToken);
 
-        // Return in chronological order (oldest first for chat display)
-        return messages.AsEnumerable().Reverse();
+        return messages;
     }
 } 

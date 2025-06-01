@@ -1,8 +1,9 @@
-using ChatApp.Application.Common.Models;
+using ChatApp.Application.Common.DTOs;
 using MediatR;
 
-namespace ChatApp.Application.Messages.Queries.GetRecentMessages;
+namespace ChatApp.Application.Features.Messages.Queries.GetRecentMessages;
 
-public record GetRecentMessagesQuery(
-    int Count = 50
-) : IRequest<IEnumerable<MessageDto>>; 
+public class GetRecentMessagesQuery : IRequest<List<MessageDto>>
+{
+    public int Limit { get; set; } = 50;
+} 

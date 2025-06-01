@@ -1,13 +1,15 @@
-using ChatApp.Application.Common.Models;
+using ChatApp.Application.Common.DTOs;
+using ChatApp.Domain.Entities;
 using ChatApp.Domain.ValueObjects;
 using MediatR;
 
-namespace ChatApp.Application.Users.Commands.RegisterUser;
+namespace ChatApp.Application.Features.Users.Commands.RegisterUser;
 
-public record RegisterUserCommand(
-    string Name,
-    string Email,
-    string Password,
-    Gender Gender,
-    DateTime DateOfBirth
-) : IRequest<UserDto>; 
+public class RegisterUserCommand : IRequest<User>
+{
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public Gender Gender { get; set; }
+    public DateTime DateOfBirth { get; set; }
+} 

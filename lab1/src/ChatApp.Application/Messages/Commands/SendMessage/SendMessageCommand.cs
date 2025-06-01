@@ -1,9 +1,10 @@
-using ChatApp.Application.Common.Models;
+using ChatApp.Domain.Entities;
 using MediatR;
 
-namespace ChatApp.Application.Messages.Commands.SendMessage;
+namespace ChatApp.Application.Features.Messages.Commands.SendMessage;
 
-public record SendMessageCommand(
-    string Content,
-    Guid SenderId
-) : IRequest<MessageDto>; 
+public class SendMessageCommand : IRequest<Message>
+{
+    public Guid SenderId { get; set; }
+    public string Content { get; set; } = string.Empty;
+} 

@@ -1,9 +1,10 @@
-using ChatApp.Application.Common.Models;
+using ChatApp.Domain.Entities;
 using MediatR;
 
-namespace ChatApp.Application.Users.Queries.LoginUser;
+namespace ChatApp.Application.Features.Users.Queries.LoginUser;
 
-public record LoginUserQuery(
-    string Email,
-    string Password
-) : IRequest<UserDto?>; 
+public class LoginUserQuery : IRequest<User>
+{
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+} 

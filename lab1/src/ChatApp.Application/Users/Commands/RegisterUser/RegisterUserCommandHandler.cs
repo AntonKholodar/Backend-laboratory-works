@@ -1,14 +1,13 @@
 using ChatApp.Application.Common.Interfaces;
-using ChatApp.Application.Common.Models;
 using ChatApp.Domain.Entities;
 using ChatApp.Domain.Repositories;
 using ChatApp.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatApp.Application.Users.Commands.RegisterUser;
+namespace ChatApp.Application.Features.Users.Commands.RegisterUser;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, User>
 {
     private readonly IApplicationDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
@@ -19,7 +18,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<User> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         // Create Email value object (this will validate the email format)
         var email = new Email(request.Email);
@@ -49,18 +48,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        // Return DTO
-        return new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Email = user.Email.Value,
-            Gender = user.Gender,
-            DateOfBirth = user.DateOfBirth,
-            IsOnline = user.IsOnline,
-            LastSeenAt = user.LastSeenAt,
-            CreatedAt = user.CreatedAt,
-            Age = user.GetAge()
-        };
+        // Return the user entity
+        return user;
     }
 } 
