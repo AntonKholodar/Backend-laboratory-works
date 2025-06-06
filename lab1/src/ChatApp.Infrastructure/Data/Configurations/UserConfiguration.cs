@@ -25,10 +25,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConversion(
                 email => email.Value,
                 value => new Email(value))
+            .HasColumnName("Email")
             .IsRequired()
             .HasMaxLength(256);
 
-        builder.HasIndex(u => u.Email.Value)
+        // Create index on the email column
+        builder.HasIndex(u => u.Email)
             .IsUnique()
             .HasDatabaseName("IX_Users_Email");
 

@@ -21,10 +21,11 @@ public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, User>
     {
         // Create Email value object for validation
         var email = new Email(request.Email);
-        
+
         // Find user by email
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email.Value == email.Value, cancellationToken);
+            .Where(u => u.Email == email)
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (user == null)
         {

@@ -9,12 +9,12 @@ namespace ChatApp.Application.Features.Users.Commands.RegisterUser;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, User>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
 
-    public RegisterUserCommandHandler(IApplicationDbContext context, IPasswordHasher passwordHasher)
+    public RegisterUserCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
     {
-        _context = context;
+        _userRepository = userRepository;
         _passwordHasher = passwordHasher;
     }
 
@@ -24,9 +24,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
         var email = new Email(request.Email);
         
         // Check if user already exists
-        var existingUser = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email.Value == email.Value, cancellationToken);
-        
+        var existingUser = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (existingUser != null)
         {
             throw new InvalidOperationException($"User with email {email.Value} already exists.");
@@ -44,11 +42,14 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
             request.DateOfBirth
         );
 
-        // Add to context
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        // Return the user entity
-        return user;
+        // Add using repository
+        try
+        {
+            return await _userRepository.AddAsync(user, cancellationToken);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("UNIQUE constraint") == true)
+        {
+            throw new InvalidOperationException($"User with email {email.Value} already exists.");
+        }
     }
 } 

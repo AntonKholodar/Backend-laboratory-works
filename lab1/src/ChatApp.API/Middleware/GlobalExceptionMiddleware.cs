@@ -46,25 +46,37 @@ public class GlobalExceptionMiddleware
             {
                 Success = false,
                 Message = domainEx.Message,
-                Errors = new List<string>()
+                Errors = new List<string> { domainEx.Message }
             },
             UnauthorizedAccessException => new ApiResponse
             {
                 Success = false,
-                Message = "Unauthorized access",
-                Errors = new List<string>()
+                Message = "Access denied",
+                Errors = new List<string> { "You do not have permission to access this resource" }
             },
             ArgumentException argEx => new ApiResponse
             {
                 Success = false,
-                Message = argEx.Message,
-                Errors = new List<string>()
+                Message = "Invalid argument",
+                Errors = new List<string> { argEx.Message }
+            },
+            InvalidOperationException invalidOpEx => new ApiResponse
+            {
+                Success = false,
+                Message = "Invalid operation",
+                Errors = new List<string> { invalidOpEx.Message }
+            },
+            KeyNotFoundException notFoundEx => new ApiResponse
+            {
+                Success = false,
+                Message = "Resource not found",
+                Errors = new List<string> { notFoundEx.Message }
             },
             _ => new ApiResponse
             {
                 Success = false,
-                Message = "An error occurred while processing your request",
-                Errors = new List<string>()
+                Message = "An unexpected error occurred",
+                Errors = new List<string> { "Please try again later or contact support if the problem persists" }
             }
         };
 
@@ -74,6 +86,8 @@ public class GlobalExceptionMiddleware
             DomainException => (int)HttpStatusCode.BadRequest,
             UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
             ArgumentException => (int)HttpStatusCode.BadRequest,
+            InvalidOperationException => (int)HttpStatusCode.BadRequest,
+            KeyNotFoundException => (int)HttpStatusCode.NotFound,
             _ => (int)HttpStatusCode.InternalServerError
         };
 
