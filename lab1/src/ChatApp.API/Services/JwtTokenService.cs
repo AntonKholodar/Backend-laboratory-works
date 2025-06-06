@@ -27,7 +27,7 @@ public class JwtTokenService : IJwtTokenService
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Name),
             new Claim(ClaimTypes.Email, user.Email.Value),
-            new Claim("gender", user.Gender.ToString()),
+            new Claim(ClaimTypes.Gender, user.Gender.ToString()),
             new Claim("dateOfBirth", user.DateOfBirth.ToString("yyyy-MM-dd"))
         };
 

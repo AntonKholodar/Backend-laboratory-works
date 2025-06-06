@@ -115,12 +115,14 @@ public class AuthController : ControllerBase
             return Unauthorized(ApiResponse<UserDto>.ErrorResult("User not authenticated"));
         }
 
+        var genderClaim = User.FindFirst(ClaimTypes.Gender)?.Value;
+
         var userDto = new UserDto
         {
             Id = Guid.Parse(userId),
             Name = User.FindFirst(ClaimTypes.Name)?.Value ?? "",
             Email = User.FindFirst(ClaimTypes.Email)?.Value ?? "",
-            Gender = User.FindFirst("gender")?.Value ?? "",
+            Gender = genderClaim ?? "",
             DateOfBirth = DateTime.Parse(User.FindFirst("dateOfBirth")?.Value ?? DateTime.MinValue.ToString()),
             IsOnline = true,
             LastSeenAt = DateTime.UtcNow,
