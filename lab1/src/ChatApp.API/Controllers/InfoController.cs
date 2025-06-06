@@ -65,7 +65,7 @@ public class InfoController : ControllerBase
             },
             Contact = new
             {
-                University = "University Name",
+                University = "National Technical University of Ukraine \"Igor Sikorsky Kyiv Polytechnic Institute\"",
                 Course = "Backend Development Laboratory Work",
                 Assignment = "Laboratory Work #1"
             }
