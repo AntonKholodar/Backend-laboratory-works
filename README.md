@@ -10,6 +10,8 @@ This repository contains laboratory works for Backend development course.
 - Domain-Driven Design (DDD)
 - CQRS with MediatR
 - JWT Authentication
+- SignalR (Lab 2)
+- Role-based Authorization (Lab 2)
 - SQLite Database
 - xUnit Testing
 
