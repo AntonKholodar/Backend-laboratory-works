@@ -3,7 +3,7 @@
 **Student:** Anton Kholodar  
 **Group:** KV-41mp  
 **Laboratory Work:** Laboratory Work #2 - Real-time Data Exchange and Admin Management  
-**Report:** [Google Drive Link](https://docs.google.com/document/d/1RZ5DerPykOtyqqe0w6KECOAk2Z0byhGDfPdsp833gX0/edit?usp=sharing)
+**Report:** [Google Drive Link](https://docs.google.com/document/d/1V4H0hOeNvajpenPaSlx163z8G_ugmDpLB945g53wFGE/edit?tab=t.0)
 
 ## Assignment
 
